@@ -1,17 +1,10 @@
-﻿using Employee_project.Helpers;
-using EmployeeManagementSystem.Data;
+﻿using EmployeeManagementSystem.Data;
 using EmployeeManagementSystem.DTOs;
-using EmployeeManagementSystem.Entities;
 using EmployeeManagementSystem.Exceptions;
-using EmployeeManagementSystem.Helpers;
 using EmployeeManagementSystem.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace EmployeeManagementSystem.Controllers
 {
@@ -28,7 +21,7 @@ namespace EmployeeManagementSystem.Controllers
             _context = context;
         }
 
-        // ✅ GET: api/employees (For Admin - List All Employees)
+        // GET: api/employees 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllEmployees()
@@ -37,10 +30,10 @@ namespace EmployeeManagementSystem.Controllers
             return Ok(employees);
         }
 
-        // ✅ POST: api/employees (Admin creates new employee)
+        // POST: api/employees (Admin creates new employee)
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateEmployee([FromBody] EmployeeCreateDto dto)
+        public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -56,17 +49,8 @@ namespace EmployeeManagementSystem.Controllers
             }
         }
 
-
-        // simple hash method
-        private string HashPassword(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
-        }
-
-// ✅ GET: api/employees/me (Employee fetches own profile)
-[HttpGet("me")]
+        // GET: api/employees/me 
+        [HttpGet("me")]
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> GetOwnProfile()
         {
@@ -75,20 +59,20 @@ namespace EmployeeManagementSystem.Controllers
             return Ok(profile);
         }
 
-        // ✅ PUT: api/employees/me (Employee updates own profile)
+        // PUT: api/employees/me (Employee updates own profile)
         [HttpPut("me")]
         [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> UpdateOwnProfile(EmployeeUpdateDto dto)
+        public async Task<IActionResult> UpdateOwnProfile(UpdateEmployeeDto dto)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             await _employeeService.UpdateOwnProfileAsync(userId, dto);
             return Ok(new { message = "Profile updated successfully" });
         }
 
-        // ✅ PUT: api/employees/{id} (Admin edits any employee)
+        //  PUT: api/employees/{id} (Admin edits any employee)
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateEmployee(int id, EmployeeUpdateDto dto)
+        public async Task<IActionResult> UpdateEmployee(int id, UpdateEmployeeDto dto)
         {
             try
             {
@@ -109,12 +93,12 @@ namespace EmployeeManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error here
+             
                 return StatusCode(500, new { message = "An error occurred while updating the employee" });
             }
         }
 
-        // ✅ DELETE: api/employees/{id} (Admin deletes employee)
+        //  DELETE: api/employees/{id} (Admin deletes employee)
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteEmployee(int id)
@@ -124,7 +108,7 @@ namespace EmployeeManagementSystem.Controllers
         }
 
         [HttpGet("by-department/{departmentName}")]
-        [Authorize(Roles = "Admin")] // Or "Employee", based on your use-case
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> GetEmployeesByDepartment(string departmentName)
         {
             var employees = await _employeeService.GetEmployeesByDepartmentAsync(departmentName);

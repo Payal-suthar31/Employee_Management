@@ -1,5 +1,4 @@
-﻿using Employee_project.Entity;
-using EmployeeManagementSystem.Entities;
+﻿using EmployeeManagementSystem.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Data
@@ -15,6 +14,7 @@ namespace EmployeeManagementSystem.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,8 +35,8 @@ namespace EmployeeManagementSystem.Data
                 entity.HasIndex(e => e.Email)
                     .IsUnique();
 
-                entity.Property(e => e.Password)
-                    .IsRequired();
+                //entity.Property(e => e.Password)
+                //    .IsRequired();
 
                 entity.Property(e => e.Department)
                     .IsRequired()
@@ -56,29 +56,32 @@ namespace EmployeeManagementSystem.Data
                 entity.HasKey(r => r.ReportId);
 
                 entity.HasOne(r => r.Employee)
-                      .WithMany(e => e.Reports)  
+                      .WithMany(e => e.Reports) 
                       .HasForeignKey(r => r.EmployeeId)
-                      .OnDelete(DeleteBehavior.Cascade);  
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
 
 
 
-            builder.Entity<Department>().HasData(
-               
-                new Department { Id = 1, Name = "HR" },
-                new Department { Id = 2, Name = "IT" },
-                new Department { Id = 3, Name = "Finance" },
-                new Department { Id = 4, Name = "Sales" },
-                new Department { Id = 5, Name = "Marketing" },
-                new Department { Id = 6, Name = "Operations" },
-                new Department { Id = 7, Name = "Customer Support" },
-                new Department { Id = 8, Name = "Admin" },
-                new Department { Id = 9, Name = "R&D" },
-                new Department { Id = 10, Name = "Procurement" },
-                new Department { Id = 11, Name = "Legal" }
 
-            );
+
+
+            //builder.Entity<Department>().HasData(
+               
+            //    new Department { Id = 1, Name = "HR" },
+            //    new Department { Id = 2, Name = "IT" },
+            //    new Department { Id = 3, Name = "Finance" },
+            //    new Department { Id = 4, Name = "Sales" },
+            //    new Department { Id = 5, Name = "Marketing" },
+            //    new Department { Id = 6, Name = "Operations" },
+            //    new Department { Id = 7, Name = "Customer Support" },
+            //    new Department { Id = 8, Name = "Admin" },
+            //    new Department { Id = 9, Name = "R&D" },
+            //    new Department { Id = 10, Name = "Procurement" },
+            //    new Department { Id = 11, Name = "Legal" }
+
+            //);
         }
     }
 }

@@ -13,8 +13,9 @@ namespace EmployeeManagementSystem.Entities
         public Employee? Employee { get; set; }
         public string? Department { get; internal set; }
         public string? Position { get; internal set; }
+        public bool IsApproved { get; set; } = false;     
+        public DateTime RequestedAt { get; set; } = DateTime.UtcNow; 
 
-        
     }
 
 }

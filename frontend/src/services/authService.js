@@ -48,7 +48,7 @@ const authService = {
       if (error.response?.status === 500) {
         throw new Error('Server error. Please try again later.');
       } else if (error.response?.status === 401) {
-        throw new Error('Invalid email or password.');
+        throw new Error('Your account is pending approval. Please wait for admin approval before logging in.');
       } else if (error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }

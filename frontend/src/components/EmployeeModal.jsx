@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import departmentService from '../services/departmentService';
 
 const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
   const [formData, setFormData] = useState({
@@ -8,11 +10,48 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
     position: '',
     dateOfJoining: '',
     isActive: true,
+    password: '',
   });
 
+  const [departments, setDepartments] = useState([]);
+  const [positions] = useState(departmentService.getPositions());
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
+    const fetchDepartments = async () => {
+      if (!isOpen) return;
+      
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5181/api/Department', {
+          headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+          }
+        });
+        setDepartments(response.data);
+        setError('');
+      } catch (err) {
+        console.error('Error fetching departments:', err);
+        setError('Failed to load departments');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
+
     if (employee) {
-      setFormData(employee);
+      setFormData({
+        fullName: employee.fullName || '',
+        email: employee.email || '',
+        department: employee.department || '',
+        position: employee.position || '',
+        dateOfJoining: employee.dateOfJoining ? employee.dateOfJoining.split('T')[0] : '',
+        isActive: employee.isActive ?? true,
+      });
     } else {
       setFormData({
         fullName: '',
@@ -21,16 +60,17 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
         position: '',
         dateOfJoining: '',
         isActive: true,
+        password: '',
       });
     }
-  }, [employee]);
+  }, [isOpen, employee]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -46,6 +86,10 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
         <h2 className="text-xl font-bold mb-4">
           {employee ? 'Edit Employee' : 'Add Employee'}
         </h2>
+        
+        {error && (
+          <div className="mb-4 text-red-600 text-sm">{error}</div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -76,32 +120,61 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
             />
           </div>
 
+          {!employee && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Department
             </label>
-            <input
-              type="text"
+            <select
               name="department"
               value={formData.department}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               required
-            />
+              disabled={loading}
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.name}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Position
             </label>
-            <input
-              type="text"
+            <select
               name="position"
               value={formData.position}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               required
-            />
+            >
+              <option value="">Select Position</option>
+              {positions.map((pos) => (
+                <option key={pos} value={pos}>
+                  {pos}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -141,6 +214,7 @@ const EmployeeModal = ({ isOpen, onClose, onSubmit, employee }) => {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
             >
               {employee ? 'Update' : 'Create'}

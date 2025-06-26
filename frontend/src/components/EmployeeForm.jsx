@@ -171,8 +171,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
 
       <div>
         <label htmlFor="position" className="block text-sm font-medium text-gray-700">Position</label>
-        <input
-          type="text"
+        <select
           id="position"
           name="position"
           value={formData.position}

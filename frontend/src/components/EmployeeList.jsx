@@ -3,6 +3,7 @@ import { employeeApi } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import axios from 'axios';
+import departmentService from '../services/departmentService';
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -275,6 +276,39 @@ const EmployeeFormContent = ({ initialData, onSubmit, onCancel }) => {
     role: initialData?.role || 'Employee'
   });
 
+  const [departments, setDepartments] = useState([]);
+  const [positions] = useState(departmentService.getPositions());
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authentication token found');
+        }
+        const response = await axios.get('http://localhost:5181/api/Department', {
+          headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        setDepartments(response.data);
+        setError('');
+      } catch (err) {
+        console.error('Error fetching departments:', err);
+        setError('Failed to load departments');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -290,93 +324,107 @@ const EmployeeFormContent = ({ initialData, onSubmit, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+      <div>
         <label className="block text-sm font-semibold text-[#232946] mb-2">Full Name</label>
-                <input
-                  type="text"
+        <input
+          type="text"
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
+          required
+        />
+      </div>
+      <div>
         <label className="block text-sm font-semibold text-[#232946] mb-2">Email</label>
-                <input
-                  type="email"
+        <input
+          type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
-                  required
-                />
-              </div>
+          required
+        />
+      </div>
       {!initialData && (
-                <div>
+        <div>
           <label className="block text-sm font-semibold text-[#232946] mb-2">Password</label>
-                  <input
-                    type="password"
+          <input
+            type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
             required
-                  />
-                </div>
-              )}
-              <div>
+          />
+        </div>
+      )}
+      <div>
         <label className="block text-sm font-semibold text-[#232946] mb-2">Department</label>
-                <input
-                  type="text"
+        <select
           name="department"
           value={formData.department}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
-                  required
-                  placeholder="Enter department name"
-                />
-              </div>
-              <div>
+          required
+          disabled={loading}
+        >
+          <option value="">Select Department</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.name}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      </div>
+      <div>
         <label className="block text-sm font-semibold text-[#232946] mb-2">Position</label>
-                <input
-                  type="text"
+        <select
           name="position"
           value={formData.position}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
+          required
+        >
+          <option value="">Select Position</option>
+          {positions.map((pos) => (
+            <option key={pos} value={pos}>
+              {pos}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
         <label className="block text-sm font-semibold text-[#232946] mb-2">Role</label>
-                <select
+        <select
           name="role"
           value={formData.role}
           onChange={handleChange}
           className="w-full px-4 py-2 border border-[#bfa181]/30 rounded-lg focus:ring-2 focus:ring-[#bfa181] focus:border-transparent"
-                  required
-                >
-                  <option value="Employee">Employee</option>
-                  <option value="Admin">Admin</option>
-                </select>
-              </div>
+          required
+        >
+          <option value="Employee">Employee</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
       <div className="md:col-span-2 flex gap-3 pt-4">
         <button
           type="submit"
-          className="bg-gradient-to-r from-[#bfa181] to-[#8B7355] text-white px-6 py-2 rounded-lg font-semibold hover:from-[#8B7355] hover:to-[#bfa181] transition-colors focus:outline-none focus:ring-2 focus:ring-[#bfa181]"
+          disabled={loading}
+          className="bg-gradient-to-r from-[#bfa181] to-[#8B7355] text-white px-6 py-2 rounded-lg font-semibold hover:from-[#8B7355] hover:to-[#bfa181] transition-colors focus:outline-none focus:ring-2 focus:ring-[#bfa181] disabled:opacity-50"
         >
           {initialData ? 'Update' : 'Add'} Employee
         </button>
-              <button
-                type="button"
+        <button
+          type="button"
           onClick={onCancel}
           className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 };
 

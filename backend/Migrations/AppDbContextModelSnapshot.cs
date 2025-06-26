@@ -17,10 +17,42 @@ namespace EmployeeManagementSystem.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("ProductVersion", "8.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("EmployeeManagementSystem.Entities.ContactMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactMessages");
+                });
 
             modelBuilder.Entity("EmployeeManagementSystem.Entities.Department", b =>
                 {
@@ -37,63 +69,6 @@ namespace EmployeeManagementSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "HR"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "IT"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Finance"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Sales"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Marketing"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Operations"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Customer Support"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "R&D"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Procurement"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Legal"
-                        });
                 });
 
             modelBuilder.Entity("EmployeeManagementSystem.Entities.Employee", b =>
@@ -122,9 +97,8 @@ namespace EmployeeManagementSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Position")
                         .IsRequired()
@@ -150,45 +124,7 @@ namespace EmployeeManagementSystem.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("EmployeeManagementSystem.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Department")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Position")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Employee_project.Entity.Report", b =>
+            modelBuilder.Entity("EmployeeManagementSystem.Entities.Report", b =>
                 {
                     b.Property<int>("ReportId")
                         .ValueGeneratedOnAdd()
@@ -202,6 +138,9 @@ namespace EmployeeManagementSystem.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DocumentPath")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -234,6 +173,50 @@ namespace EmployeeManagementSystem.Migrations
                     b.ToTable("Reports");
                 });
 
+            modelBuilder.Entity("EmployeeManagementSystem.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Department")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("EmployeeManagementSystem.Entities.Employee", b =>
                 {
                     b.HasOne("EmployeeManagementSystem.Entities.User", "User")
@@ -245,7 +228,7 @@ namespace EmployeeManagementSystem.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Employee_project.Entity.Report", b =>
+            modelBuilder.Entity("EmployeeManagementSystem.Entities.Report", b =>
                 {
                     b.HasOne("EmployeeManagementSystem.Entities.Employee", "Employee")
                         .WithMany("Reports")

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\project\\backend\\EmployeeManagementSystem.csproj": {}
+    "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\Employee_project\\Backend\\EmployeeManagementSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\project\\backend\\EmployeeManagementSystem.csproj": {
+    "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\Employee_project\\Backend\\EmployeeManagementSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\project\\backend\\EmployeeManagementSystem.csproj",
+        "projectUniqueName": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\Employee_project\\Backend\\EmployeeManagementSystem.csproj",
         "projectName": "EmployeeManagementSystem",
-        "projectPath": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\project\\backend\\EmployeeManagementSystem.csproj",
+        "projectPath": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\Employee_project\\Backend\\EmployeeManagementSystem.csproj",
         "packagesPath": "C:\\Users\\PayalSuthar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\project\\backend\\obj\\",
+        "outputPath": "C:\\Users\\PayalSuthar\\OneDrive - Kadel Labs Private Limited\\Desktop\\Employee_project\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -53,6 +53,10 @@
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.*, )"
+            },
+            "CloudinaryDotNet": {
+              "target": "Package",
+              "version": "[1.27.6, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

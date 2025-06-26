@@ -72,10 +72,11 @@ const employeeApi = {
 // Report endpoints
 const reportApi = {
   createReport: (data) => api.post('/Report', data),
-  getAllReports: () => api.get('/Report/all'),
+  getAllReports: () => api.get('/Report'),
   getMyReports: () => api.get('/Report/my'),
   updateReportStatus: (id, status) => api.put(`/Report/${id}/status`, { Status: status }),
   getDocument: (id) => api.get(`/Report/${id}/document`),
+  deleteReport: (id) => api.delete(`/Report/${id}`),
 };
 
 export { employeeApi, reportApi };

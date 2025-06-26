@@ -3,8 +3,6 @@ using EmployeeManagementSystem.DTOs;
 using EmployeeManagementSystem.Entities;
 using EmployeeManagementSystem.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace EmployeeManagementSystem.Services
 {
@@ -26,7 +24,10 @@ namespace EmployeeManagementSystem.Services
                 Email = e.Email,
                 Department = e.Department,
                 Position = e.Position,
-                DateOfJoining = e.DateOfJoining
+                DateOfJoining = e.DateOfJoining,
+                Role = e.Role,
+                UserId = e.UserId,
+                IsActive = e.IsActive
             }).ToListAsync();
         }
 
@@ -42,13 +43,15 @@ namespace EmployeeManagementSystem.Services
                 Email = employee.Email,
                 Department = employee.Department,
                 Position = employee.Position,
-                DateOfJoining = employee.DateOfJoining
+                DateOfJoining = employee.DateOfJoining,
+                Role = employee.Role,
+                UserId = employee.UserId,
+                IsActive = employee.IsActive
             };
         }
 
-        public async Task<EmployeeResponseDto> CreateEmployeeAsync(EmployeeCreateDto dto)
+        public async Task<EmployeeResponseDto> CreateEmployeeAsync(CreateEmployeeDto dto)
         {
-            // Add User
             var user = new User
             {
                 FullName = dto.FullName,
@@ -56,22 +59,22 @@ namespace EmployeeManagementSystem.Services
                 PasswordHash = HashPassword(dto.Password),
                 Role = dto.Role ?? "Employee",
                 Department = dto.Department,
-                Position = dto.Position
+                Position = dto.Position,
+                IsApproved = true
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Add Employee
             var employee = new Employee
             {
                 FullName = dto.FullName,
                 Email = dto.Email,
-                Password = "", // no longer used
                 Department = dto.Department,
                 Position = dto.Position,
                 Role = dto.Role ?? "Employee",
-                DateOfJoining = DateTime.UtcNow,
-                UserId = user.Id
+                DateOfJoining = dto.DateOfJoining,
+                UserId = user.Id,
+                IsActive = true
             };
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
@@ -83,11 +86,14 @@ namespace EmployeeManagementSystem.Services
                 Email = employee.Email,
                 Department = employee.Department,
                 Position = employee.Position,
-                DateOfJoining = employee.DateOfJoining
+                DateOfJoining = employee.DateOfJoining,
+                Role = employee.Role,
+                UserId = employee.UserId,
+                IsActive = employee.IsActive
             };
         }
 
-        public async Task UpdateOwnProfileAsync(int userId, EmployeeUpdateDto dto)
+        public async Task UpdateOwnProfileAsync(int userId, UpdateEmployeeDto dto)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.UserId == userId);
             if (employee == null) throw new Exception("Employee not found");
@@ -96,11 +102,12 @@ namespace EmployeeManagementSystem.Services
             employee.Email = dto.Email;
             employee.Department = dto.Department;
             employee.Position = dto.Position;
+            employee.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateEmployeeAsync(int id, EmployeeUpdateDto dto)
+        public async Task UpdateEmployeeAsync(int id, UpdateEmployeeDto dto)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null) throw new Exception("Employee not found");
@@ -109,8 +116,19 @@ namespace EmployeeManagementSystem.Services
             employee.Email = dto.Email;
             employee.Department = dto.Department;
             employee.Position = dto.Position;
+            employee.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
+
+            if (dto.ResetPassword)
+            {
+                var user = await _context.Users.FindAsync(employee.UserId);
+                if (user != null && !string.IsNullOrWhiteSpace(dto.Password))
+                {
+                    user.PasswordHash = HashPassword(dto.Password);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
 
         public async Task ResetEmployeePasswordAsync(int id)
@@ -138,29 +156,28 @@ namespace EmployeeManagementSystem.Services
             await _context.SaveChangesAsync();
         }
 
-        // Utility method
-        private string HashPassword(string password)
+        public async Task<IEnumerable<EmployeeResponseDto>> GetEmployeesByDepartmentAsync(string departmentName)
         {
-            using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
+            return await _context.Employees
+                .Where(e => e.Department == departmentName)
+                .Select(e => new EmployeeResponseDto
+                {
+                    Id = e.Id,
+                    FullName = e.FullName,
+                    Email = e.Email,
+                    Department = e.Department,
+                    Position = e.Position,
+                    DateOfJoining = e.DateOfJoining,
+                    Role = e.Role,
+                    UserId = e.UserId,
+                    IsActive = e.IsActive
+                })
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<EmployeeResponseDto>> GetEmployeesByDepartmentAsync(string departmentName)
-{
-    return await _context.Employees
-        .Where(e => e.Department == departmentName)
-        .Select(e => new EmployeeResponseDto
+        private string HashPassword(string password)
         {
-            Id = e.Id,
-            FullName = e.FullName,
-            Email = e.Email,
-            Department = e.Department,
-            Position = e.Position,
-            DateOfJoining = e.DateOfJoining
-        })
-        .ToListAsync();
-}
-
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
     }
 }

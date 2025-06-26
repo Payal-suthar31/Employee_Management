@@ -133,7 +133,7 @@ const EmployeeDashboard = () => {
               <div>
                 <label className="text-sm font-medium text-[#BFA181]">Department</label>
                 <p className="text-gray-800 font-medium">{employeeData?.department}</p>
-              </div>
+                </div>
               <div>
                 <label className="text-sm font-medium text-[#BFA181]">Employee ID</label>
                 <p className="text-gray-800 font-medium">{employeeData?.id}</p>
@@ -149,7 +149,7 @@ const EmployeeDashboard = () => {
                     day: 'numeric'
                   })}
                 </p>
-              </div>
+                </div>
               <div>
                 <label className="text-sm font-medium text-[#BFA181]">Status</label>
                 <p className="inline-flex items-center">
@@ -233,7 +233,7 @@ const EmployeeDashboard = () => {
                   <p className="text-2xl font-bold text-gray-800">{reportStats.pending}</p>
                 </div>
               </div>
-            </div>
+                  </div>
 
             <div className="bg-gray-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-4">
@@ -242,7 +242,7 @@ const EmployeeDashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <div>
+                  <div>
                   <p className="text-sm font-medium text-gray-600">Approved</p>
                   <p className="text-2xl font-bold text-gray-800">{reportStats.approved}</p>
                 </div>
@@ -271,19 +271,19 @@ const EmployeeDashboard = () => {
           <div 
             onClick={() => setShowReportModal(true)}
             className="bg-[#BFA181] rounded-xl p-6 text-white cursor-pointer hover:bg-[#8B7355] transition-colors"
-          >
+                >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <div>
+                    </svg>
+                  </div>
+                  <div>
                 <h3 className="text-xl font-semibold">Submit Report</h3>
                 <p className="text-white/80">Create and submit a new report</p>
               </div>
-            </div>
-          </div>
+                  </div>
+                </div>
 
           {/* Profile Card */}
           <div 
@@ -326,4 +326,4 @@ const EmployeeDashboard = () => {
   );
 };
 
-export default EmployeeDashboard;
+export default EmployeeDashboard; 

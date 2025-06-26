@@ -1,104 +1,203 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import departmentService from '../../services/departmentService';
 
 const PendingRequests = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
+  const [pendingEmployees, setPendingEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [formValues, setFormValues] = useState({}); // for dept & position per user
-  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    checkAdminAndFetchUsers();
-  }, [navigate]);
-
-  const showNotification = (message, type = 'error') => {
-    setNotification({ show: true, message, type });
-    setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
-  };
-
-  const checkAdminAndFetchUsers = async () => {
+  const checkAuthAndFetchData = useCallback(async () => {
+    try {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
 
     if (!token) {
-      showNotification('Please login to continue');
-      navigate('/login');
+        setError('Please login to continue');
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      // Verify token format and expiration
+      try {
+        const tokenData = JSON.parse(atob(token.split('.')[1]));
+        const expirationTime = tokenData.exp * 1000; // Convert to milliseconds
+        
+        if (Date.now() >= expirationTime) {
+          setError('Session expired. Please login again.');
+          localStorage.removeItem('token');
+          localStorage.removeItem('userRole');
+          navigate('/login', { replace: true });
+          return;
+        }
+
+        // Verify admin role from token
+        const roleFromToken = tokenData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        if (roleFromToken !== 'Admin') {
+          setError('Access denied. Admin privileges required.');
+          navigate('/login', { replace: true });
+          return;
+        }
+      } catch (e) {
+        console.error('Error parsing token:', e);
+        setError('Invalid token. Please login again.');
+        navigate('/login', { replace: true });
       return;
     }
 
     if (!userRole || userRole.toLowerCase() !== 'admin') {
-      showNotification('Access denied. Admin privileges required.');
-      navigate('/login');
+        setError('Access denied. Admin privileges required.');
+        navigate('/login', { replace: true });
       return;
     }
 
-    fetchPendingUsers();
-  };
+      await Promise.all([
+        fetchPendingEmployees(),
+        fetchDepartments()
+      ]);
+      setPositions(departmentService.getPositions());
+    } catch (error) {
+      console.error('Error in initialization:', error);
+      if (error.response?.status === 401) {
+        setError('Session expired. Please login again.');
+        navigate('/login', { replace: true });
+      } else {
+        setError('Failed to initialize page');
+      }
+    }
+  }, [navigate]);
 
-  const fetchPendingUsers = async () => {
+  useEffect(() => {
+    checkAuthAndFetchData();
+  }, [checkAuthAndFetchData]);
+
+  const fetchDepartments = async () => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+
+      const data = await departmentService.getAllDepartments();
+      setDepartments(data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+      if (error.response?.status === 401) {
+        navigate('/login', { replace: true });
+        return;
+      }
+      setError('Failed to load departments');
+    }
+  };
+
+  const fetchPendingEmployees = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+
       const response = await axios.get('http://localhost:5181/api/Account/pending-requests', {
         headers: {
           'Authorization': token,
           'Accept': 'application/json'
         }
       });
-      setPendingUsers(response.data);
-
-      // Set initial empty department/position for each user
-      const initial = {};
-      response.data.forEach(user => {
-        initial[user.id] = { department: '', position: '' };
-      });
-      setFormValues(initial);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching pending users:', err);
-      if (err.response?.status === 401) {
-        showNotification('Session expired or unauthorized. Please login again as admin.');
-        navigate('/login');
-      } else {
-        setError('Failed to load pending user requests');
+      setPendingEmployees(response.data);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching pending employees:', error);
+      if (error.response?.status === 401) {
+        navigate('/login', { replace: true });
+        return;
       }
+      setError('Failed to load pending employees');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (userId, field, value) => {
-    setFormValues(prev => ({
-      ...prev,
-      [userId]: {
-        ...prev[userId],
-        [field]: value
-      }
-    }));
-  };
-
-  const handleApprove = async (userId) => {
+  const handleApprove = async (employeeId, departmentId, position) => {
     try {
       const token = localStorage.getItem('token');
+      console.log('Current token:', token); // Debug token
+
       if (!token) {
-        showNotification('Please login to continue');
-        navigate('/login');
+        setError('Please login to continue');
+        navigate('/login', { replace: true });
         return;
       }
 
-      const { department, position } = formValues[userId] || {};
-      if (!department || !position) {
-        showNotification('Please select both department and position');
+      const selectedDepartment = departments.find(d => d.id === parseInt(departmentId));
+      
+      if (!selectedDepartment) {
+        setError('Please select a valid department');
+        return;
+      }
+
+      const requestData = {
+        department: selectedDepartment.name,
+        position: position
+      };
+      console.log('Request data:', requestData); // Debug request data
+
+      // Simple request matching the curl format
+      const response = await axios({
+        method: 'post',
+        url: `http://localhost:5181/api/Account/approve-user/${employeeId}`,
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json'
+        },
+        data: requestData
+      });
+
+      console.log('Response:', response); // Debug response
+
+      if (response.status === 200) {
+        setError(null);
+        await fetchPendingEmployees();
+      }
+    } catch (error) {
+      console.error('Full error object:', error); // Debug full error
+      console.error('Error response:', error.response); // Debug error response
+      
+      if (error.response?.status === 401) {
+        // Check if token is expired
+        try {
+          const tokenData = JSON.parse(atob(token.split('.')[1]));
+          const expirationTime = tokenData.exp * 1000; // Convert to milliseconds
+          if (Date.now() >= expirationTime) {
+            setError('Session expired. Please login again.');
+            localStorage.removeItem('token'); // Clear expired token
+            localStorage.removeItem('userRole'); // Clear role
+            navigate('/login', { replace: true });
+            return;
+          }
+        } catch (e) {
+          console.error('Error parsing token:', e);
+        }
+
+        setError('Unauthorized. Please login again.');
+        navigate('/login', { replace: true });
+        return;
+      }
+      setError(error.response?.data || 'Failed to approve employee');
+    }
+  };
+
+  const handleReject = async (employeeId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Please login to continue');
+        navigate('/login', { replace: true });
         return;
       }
 
       const response = await axios.post(
-        `http://localhost:5181/api/Account/approve-user/${userId}`,
-        {
-          department: department,
-          position: position
-        },
+        `http://localhost:5181/api/Account/reject-user/${employeeId}`,
+        {},
         {
           headers: {
             'Authorization': token,
@@ -107,141 +206,116 @@ const PendingRequests = () => {
         }
       );
 
-      showNotification(response.data || 'User approved successfully', 'success');
-      fetchPendingUsers();
-    } catch (err) {
-      console.error('Error approving user:', err);
-      if (err.response?.status === 401) {
-        showNotification('Session expired or unauthorized. Please login again as admin.');
-        navigate('/login');
-      } else {
-        const errorMessage = err.response?.data || 'Failed to approve user';
-        showNotification(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+      if (response.status === 200) {
+        setError(null);
+        await fetchPendingEmployees();
       }
+    } catch (error) {
+      console.error('Error rejecting employee:', error);
+      if (error.response?.status === 401) {
+        setError('Session expired. Please login again.');
+        navigate('/login', { replace: true });
+        return;
+      }
+      setError('Failed to reject employee');
     }
   };
 
-  const handleReject = async (userId) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(`http://localhost:5181/api/Account/reject-user/${userId}`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      showNotification('User rejected successfully', 'success');
-      fetchPendingUsers();
-    } catch (err) {
-      console.error('Error rejecting user:', err);
-      showNotification(err.response?.data?.message || 'Failed to reject user');
-    }
-  };
-
-  if (loading) {
-    return (
+  if (loading) return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#bfa181]"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
-  }
 
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50 text-red-600 rounded-lg">
-        <p className="font-medium">Error</p>
-        <p>{error}</p>
+  if (error) return (
+    <div className="container mx-auto p-4">
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Error: </strong>
+        <span className="block sm:inline">{error}</span>
+      </div>
       </div>
     );
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f7fafd] via-[#f8f6f2] to-[#e6e6e6] p-8">
-      {/* Notification Toast */}
-      {notification.show && (
-        <div className={`fixed top-4 right-4 z-50 rounded-lg shadow-lg p-4 ${
-          notification.type === 'success' 
-            ? 'bg-green-100 text-green-800 border border-green-200' 
-            : 'bg-red-100 text-red-800 border border-red-200'
-        }`}>
-          <div className="flex items-center">
-            {notification.type === 'success' ? (
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
-              </svg>
-            )}
-            <p className="text-sm font-medium">{notification.message}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#232946] mb-8">Pending Registration Requests</h1>
-
-        {pendingUsers.length === 0 ? (
-          <div className="bg-white rounded-lg p-6 text-center">
-            <p className="text-[#232946]/70">No pending registration requests</p>
-          </div>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">Pending Requests</h2>
+      {pendingEmployees.length === 0 ? (
+        <p className="text-gray-500">No pending requests</p>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white shadow-md rounded-lg">
+            <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Position</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="px-6 py-3 text-left">Name</th>
+                <th className="px-6 py-3 text-left">Email</th>
+                <th className="px-6 py-3 text-left">Department</th>
+                <th className="px-6 py-3 text-left">Position</th>
+                <th className="px-6 py-3 text-left">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {pendingUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4">{user.fullName}</td>
-                    <td className="px-6 py-4">{user.email}</td>
+            <tbody>
+              {pendingEmployees.map((employee) => (
+                <tr key={employee.id} className="border-b hover:bg-gray-50">
+                  <td className="px-6 py-4">{employee.fullName}</td>
+                  <td className="px-6 py-4">{employee.email}</td>
                     <td className="px-6 py-4">
                       <select
-                        className="border rounded p-1"
-                        value={formValues[user.id]?.department || ''}
-                        onChange={(e) => handleChange(user.id, 'department', e.target.value)}
-                      >
-                        <option value="">Select</option>
-                        <option value="HR">HR</option>
-                        <option value="IT">IT</option>
-                        <option value="Sales">Sales</option>
-                        <option value="Marketing">Marketing</option>
+                      className="w-full rounded-md border border-gray-300 p-2"
+                      onChange={(e) => {
+                        const updatedEmployees = pendingEmployees.map(emp => 
+                          emp.id === employee.id 
+                            ? {...emp, departmentId: e.target.value}
+                            : emp
+                        );
+                        setPendingEmployees(updatedEmployees);
+                      }}
+                      value={employee.departmentId || ''}
+                    >
+                      <option value="">Select Department</option>
+                      {departments.map(dept => (
+                        <option key={dept.id} value={dept.id}>
+                          {dept.name}
+                        </option>
+                      ))}
                       </select>
                     </td>
                     <td className="px-6 py-4">
                       <select
-                        className="border rounded p-1"
-                        value={formValues[user.id]?.position || ''}
-                        onChange={(e) => handleChange(user.id, 'position', e.target.value)}
-                      >
-                        <option value="">Select</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Developer">Developer</option>
-                        <option value="Intern">Intern</option>
-                        <option value="Executive">Executive</option>
+                      className="w-full rounded-md border border-gray-300 p-2"
+                      onChange={(e) => {
+                        const updatedEmployees = pendingEmployees.map(emp => 
+                          emp.id === employee.id 
+                            ? {...emp, position: e.target.value}
+                            : emp
+                        );
+                        setPendingEmployees(updatedEmployees);
+                      }}
+                      value={employee.position || ''}
+                    >
+                      <option value="">Select Position</option>
+                      {positions.map(pos => (
+                        <option key={pos} value={pos}>
+                          {pos}
+                        </option>
+                      ))}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-right text-sm font-medium">
+                  <td className="px-6 py-4">
+                    <div className="flex space-x-2">
                       <button
-                        onClick={() => handleApprove(user.id)}
-                        className="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-full mr-2"
+                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        onClick={() => handleApprove(employee.id, employee.departmentId, employee.position)}
+                        disabled={!employee.departmentId || !employee.position}
                       >
-                        ✓ Approve
+                        Approve
                       </button>
                       <button
-                        onClick={() => handleReject(user.id)}
-                        className="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-full"
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        onClick={() => handleReject(employee.id)}
                       >
-                        ✕ Reject
+                        Reject
                       </button>
+                    </div>
                     </td>
                   </tr>
                 ))}
@@ -249,7 +323,6 @@ const PendingRequests = () => {
             </table>
           </div>
         )}
-      </div>
     </div>
   );
 };

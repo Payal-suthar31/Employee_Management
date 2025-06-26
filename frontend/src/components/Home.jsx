@@ -45,32 +45,32 @@ const Home = () => {
         <div className="hidden md:flex items-center gap-1 lg:gap-2">
           <Link 
             to="/" 
-            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] rounded-lg transition-colors duration-200 font-medium text-sm lg:text-base"
+            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] transition-colors duration-200 font-medium text-sm lg:text-base"
           >
             Home
           </Link>
           <Link 
             to="/about" 
-            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] rounded-lg transition-colors duration-200 font-medium text-sm lg:text-base"
+            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] transition-colors duration-200 font-medium text-sm lg:text-base"
           >
             About Us
           </Link>
           <Link 
             to="/contact" 
-            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] rounded-lg transition-colors duration-200 font-medium text-sm lg:text-base"
+            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] transition-colors duration-200 font-medium text-sm lg:text-base"
           >
             Contact Us
           </Link>
           <div className="h-6 w-px bg-gray-200 mx-2"></div>
           <Link 
             to="/login" 
-            className="px-4 py-2 text-[#232946] hover:text-[#bfa181] rounded-lg transition-colors duration-200 font-medium text-sm lg:text-base"
+            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] transition-colors duration-200 font-medium text-sm lg:text-base"
           >
             Login
           </Link>
           <Link 
             to="/register" 
-            className="px-4 py-2 bg-[#bfa181] text-white rounded-lg hover:bg-[#a68a6d] transition-colors duration-200 font-medium text-sm lg:text-base"
+            className="px-3 py-2 text-[#232946] hover:text-[#bfa181] transition-colors duration-200 font-medium text-sm lg:text-base"
           >
             Register
           </Link>
@@ -131,7 +131,7 @@ const Home = () => {
               <div className="flex flex-col p-4 space-y-2">
                 <Link
                   to="/"
-                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 transition-colors"
                   onClick={toggleMobileMenu}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +141,7 @@ const Home = () => {
                 </Link>
                 <Link
                   to="/about"
-                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 transition-colors"
                   onClick={toggleMobileMenu}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@ const Home = () => {
                 </Link>
                 <Link
                   to="/contact"
-                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 transition-colors"
                   onClick={toggleMobileMenu}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@ const Home = () => {
                 
                 <Link
                   to="/login"
-                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 transition-colors"
                   onClick={toggleMobileMenu}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,7 +174,7 @@ const Home = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="flex items-center space-x-2 bg-[#bfa181] text-white font-medium py-2 px-3 rounded-lg hover:bg-[#a68a6d] transition-colors"
+                  className="flex items-center space-x-2 text-[#232946] hover:text-[#bfa181] font-medium py-2 px-3 transition-colors"
                   onClick={toggleMobileMenu}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,27 +212,41 @@ const Home = () => {
       {/* Team Section */}
       <section id="team" className="py-12 sm:py-16 bg-gradient-to-br from-[#f3ede7] to-[#e6e6e6] px-4">
         <h2 className="text-2xl sm:text-3xl font-bold text-[#5c5c5c] mb-8 sm:mb-10 text-center tracking-wide">Meet Our Team</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 max-w-6xl mx-auto">
+        <div className="flex justify-center items-center gap-8 max-w-[98vw] mx-auto">
           {[{
             name: 'Denisha',
-            role: 'Team Lead',
+            role: 'Team Lead & Manager',
             img: 'https://randomuser.me/api/portraits/women/68.jpg',
-            }, {
+            description: 'Leading with innovation'
+          }, {
             name: 'Amit Patel',
             role: 'Backend Developer',
             img: 'https://randomuser.me/api/portraits/men/32.jpg',
+            description: 'Building robust systems'
           }, {
             name: 'Priya Sharma',
             role: 'Frontend Developer',
             img: 'https://randomuser.me/api/portraits/women/65.jpg',
+            description: 'Crafting user experiences'
           }, {
             name: 'Rahul Mehta',
             role: 'UI/UX Designer',
             img: 'https://randomuser.me/api/portraits/men/44.jpg',
+            description: 'Designing with purpose'
+          }, {
+            name: 'Sarah Chen',
+            role: 'Quality Assurance',
+            img: 'https://randomuser.me/api/portraits/women/45.jpg',
+            description: 'Ensuring excellence'
+          }, {
+            name: 'Michael Ross',
+            role: 'DevOps Engineer',
+            img: 'https://randomuser.me/api/portraits/men/55.jpg',
+            description: 'Optimizing deployment'
           }].map((member, idx) => (
             <div
               key={member.name}
-              className="relative bg-white/90 rounded-2xl shadow-xl p-6 flex flex-col items-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl mx-auto w-full max-w-[280px]"
+              className="relative bg-white/90 rounded-2xl shadow-xl p-6 flex flex-col items-center transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl w-[200px] h-[280px]"
               style={{
                 boxShadow: '0 8px 32px 0 rgba(191,161,129,0.15), 0 1.5px 6px 0 rgba(192,192,192,0.10)',
                 border: '1.5px solid #e6e6e6',
@@ -241,13 +255,17 @@ const Home = () => {
               <img
                 src={member.img}
                 alt={member.name}
-                className="w-24 sm:w-28 h-24 sm:h-28 rounded-full object-cover border-4 border-[#bfa181] shadow-lg mb-4"
+                className="w-24 h-24 rounded-full object-cover border-4 border-[#bfa181] shadow-lg"
                 style={{ boxShadow: '0 4px 16px 0 rgba(191,161,129,0.18)' }}
               />
-              <h3 className="text-lg sm:text-xl font-bold text-[#5c5c5c] mb-1">{member.name}</h3>
-              <p className="text-[#bfa181] font-semibold mb-2">{member.role}</p>
-              <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#bfa181] to-[#e6e6e6] mb-2"></div>
-              <p className="text-[#7d7d7d] text-center text-sm">Passionate about building great teams and products.</p>
+              <div className="flex flex-col items-center flex-1 justify-between mt-4">
+                <div className="flex flex-col items-center">
+                  <h3 className="text-xl font-bold text-[#5c5c5c] mb-2 text-center h-7 line-clamp-1">{member.name}</h3>
+                  <p className="text-[#bfa181] font-semibold text-base mb-4 text-center h-6 line-clamp-1">{member.role}</p>
+                  <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#bfa181] to-[#e6e6e6]"></div>
+                </div>
+                <p className="text-[#7d7d7d] text-center text-sm h-5 line-clamp-1">{member.description}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -283,7 +301,7 @@ const Home = () => {
                 {feature.icon}
                 <h3 className="text-base sm:text-lg font-semibold text-[#232946] mb-2">{feature.title}</h3>
                 <p className="text-[#7d7d7d] text-sm sm:text-base">{feature.desc}</p>
-              </div>
+            </div>
             ))}
           </div>
         </div>
@@ -314,7 +332,7 @@ const Home = () => {
                   </svg>
                 </Link>
               </div>
-            </div>
+        </div>
           </div>
         </div>
       </section>
@@ -352,18 +370,18 @@ const Home = () => {
       <footer className="bg-[#111111] text-white py-8 sm:py-12 mt-10 border-t border-[#232323]/40 shadow-2xl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
                 <span className="text-xl sm:text-2xl font-extrabold tracking-wider text-white">EMS</span>
               </div>
               <p className="text-[#e0e0e0]/80 text-sm sm:text-base mb-4">
                 Manage your employees, teams, and reports with ease and security.
               </p>
-              <div className="flex gap-4 mt-2">
+              {/* <div className="flex gap-4 mt-2">
                 <a href="#" className="text-sm sm:text-base hover:text-[#bfa181] transition-colors">Facebook</a>
                 <a href="#" className="text-sm sm:text-base hover:text-[#bfa181] transition-colors">Twitter</a>
                 <a href="#" className="text-sm sm:text-base hover:text-[#bfa181] transition-colors">Instagram</a>
-              </div>
+              </div> */}
             </div>
             
             <div>
@@ -387,9 +405,9 @@ const Home = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact</h3>
               <div className="flex flex-col space-y-2 text-sm sm:text-base">
-                <p className="text-[#e0e0e0]/80">Email: info@ems.com</p>
-                <p className="text-[#e0e0e0]/80">Phone: (123) 456-7890</p>
-                <p className="text-[#e0e0e0]/80">Address: 123 Business St, City</p>
+                <p className="text-[#e0e0e0]/80">Email: priyanshikarathore8@gmail.com</p>
+                <p className="text-[#e0e0e0]/80">Phone: +91 9123456789</p>
+                <p className="text-[#e0e0e0]/80">Address: 102 Shanti Villa, Near Sadar Bazar, Udaipur, Rajasthan – 313001</p>
               </div>
             </div>
           </div>

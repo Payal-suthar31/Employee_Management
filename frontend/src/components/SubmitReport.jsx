@@ -120,7 +120,7 @@ export default function SubmitReport({ isOpen, onClose, onSubmitSuccess }) {
         type: formData.type,
         status: 'Pending',
         createdAt: new Date().toISOString(),
-        documentPath: response.data.documentPath || null
+        documentPath: response.data.documentUrl || null
       };
 
       // Reset form

@@ -15,10 +15,10 @@ namespace EmployeeManagementSystem.Services
                 _context = context;
             }
 
-            public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync()
+            public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
             {
                 return await _context.Departments
-                    .Select(d => new DepartmentDto
+                    .Select(d => new Department
                     {
                         Id = d.Id,
                         Name = d.Name

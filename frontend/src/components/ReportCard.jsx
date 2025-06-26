@@ -15,7 +15,7 @@ export default function ReportCard() {
       const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:5181/api/Report', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': token,
           'Accept': 'application/json'
         }
       });
@@ -41,7 +41,7 @@ export default function ReportCard() {
         status: action === 'approve' ? 'Approved' : 'Rejected'
       }, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': token,
           'Content-Type': 'application/json'
         }
       });

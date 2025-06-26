@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagementSystem.DTOs
 {
-    public class DepartmentDto
+    public class Department
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

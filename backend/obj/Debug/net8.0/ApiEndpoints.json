@@ -1,6 +1,43 @@
 [
   {
     "ContainingType": "AccountController",
+    "Method": "AddEmployeeByAdmin",
+    "RelativePath": "api/Account/admin-add-employee",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EmployeeManagementSystem.DTOs.CreateEmployeeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AccountController",
+    "Method": "ApproveUser",
+    "RelativePath": "api/Account/approve-user/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "EmployeeManagementSystem.DTOs.ApproveUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AccountController",
     "Method": "Login",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",
@@ -13,6 +50,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AccountController",
+    "Method": "GetPendingUsers",
+    "RelativePath": "api/Account/pending-requests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -43,6 +90,22 @@
   },
   {
     "ContainingType": "AccountController",
+    "Method": "RejectUser",
+    "RelativePath": "api/Account/reject-user/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AccountController",
     "Method": "ResetPassword",
     "RelativePath": "api/Account/reset-password",
     "HttpMethod": "POST",
@@ -52,6 +115,38 @@
       {
         "Name": "dto",
         "Type": "EmployeeManagementSystem.DTOs.ResetPasswordDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AccountController",
+    "Method": "VerifyEmail",
+    "RelativePath": "api/Account/verify-email",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EmployeeManagementSystem.DTOs.Email",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ContactController",
+    "Method": "SubmitContactForm",
+    "RelativePath": "api/Contact",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "contact",
+        "Type": "EmployeeManagementSystem.DTOs.ContactForm",
         "IsRequired": true
       }
     ],
@@ -68,6 +163,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "EmployeeManagementSystem.Controllers.DepartmentController",
+    "Method": "AddDepartment",
+    "RelativePath": "api/Department",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "department",
+        "Type": "EmployeeManagementSystem.Entities.Department",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.DepartmentController",
+    "Method": "DeleteDepartment",
+    "RelativePath": "api/Department/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.DepartmentController",
+    "Method": "GetDashboardStats",
+    "RelativePath": "api/Department/dashboard-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "EmployeeManagementSystem.Controllers.EmployeesController",
     "Method": "CreateEmployee",
     "RelativePath": "api/Employees",
@@ -77,7 +214,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "EmployeeManagementSystem.DTOs.EmployeeCreateDto",
+        "Type": "EmployeeManagementSystem.DTOs.CreateEmployeeDto",
         "IsRequired": true
       }
     ],
@@ -98,7 +235,7 @@
       },
       {
         "Name": "dto",
-        "Type": "EmployeeManagementSystem.DTOs.EmployeeUpdateDto",
+        "Type": "EmployeeManagementSystem.DTOs.UpdateEmployeeDto",
         "IsRequired": true
       }
     ],
@@ -166,30 +303,14 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "EmployeeManagementSystem.DTOs.EmployeeUpdateDto",
+        "Type": "EmployeeManagementSystem.DTOs.UpdateEmployeeDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ReportController",
-    "Method": "SubmitReport",
-    "RelativePath": "api/Report",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "EmployeeManagementSystem.DTOs.ReportCreateDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ReportController",
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
     "Method": "GetAllReports",
     "RelativePath": "api/Report",
     "HttpMethod": "GET",
@@ -199,8 +320,71 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ReportController",
-    "Method": "UpdateStatus",
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "SubmitReport",
+    "RelativePath": "api/Report",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Content",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Document",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "DeleteReport",
+    "RelativePath": "api/Report/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "GetDocument",
+    "RelativePath": "api/Report/{id}/document",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "UpdateReportStatus",
     "RelativePath": "api/Report/{id}/status",
     "HttpMethod": "PUT",
     "IsController": true,
@@ -213,14 +397,46 @@
       },
       {
         "Name": "dto",
-        "Type": "EmployeeManagementSystem.DTOs.UpdateStatusDto",
+        "Type": "EmployeeManagementSystem.DTOs.ReportStatusUpdateDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ReportController",
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "ApproveReport",
+    "RelativePath": "api/Report/approve/{reportId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "GetEmployeeReportStats",
+    "RelativePath": "api/Report/employee-stats/{employeeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "employeeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
     "Method": "GetMyReports",
     "RelativePath": "api/Report/my",
     "HttpMethod": "GET",
@@ -230,24 +446,19 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "EmployeeManagementSystem.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
+    "ContainingType": "EmployeeManagementSystem.Controllers.ReportController",
+    "Method": "RejectReport",
+    "RelativePath": "api/Report/reject/{reportId}",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
+    "Parameters": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[EmployeeManagementSystem.WeatherForecast, EmployeeManagementSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
+        "Name": "reportId",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": []
   }
 ]

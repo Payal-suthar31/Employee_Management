@@ -1,5 +1,4 @@
 ﻿using EmployeeManagementSystem.DTOs;
-using EmployeeManagementSystem.Entities;
 
 namespace EmployeeManagementSystem.Interfaces
 {
@@ -7,11 +6,11 @@ namespace EmployeeManagementSystem.Interfaces
     {
         Task<IEnumerable<EmployeeResponseDto>> GetAllEmployeesAsync();
         Task<EmployeeResponseDto> GetOwnProfileAsync(int userId);
-        Task UpdateOwnProfileAsync(int userId, EmployeeUpdateDto dto);
-        Task UpdateEmployeeAsync(int id, EmployeeUpdateDto dto);
+        Task UpdateOwnProfileAsync(int userId, UpdateEmployeeDto dto);
+        Task UpdateEmployeeAsync(int id, UpdateEmployeeDto dto);
         Task ResetEmployeePasswordAsync(int id);
         Task DeleteEmployeeAsync(int id);
-        Task<EmployeeResponseDto> CreateEmployeeAsync(EmployeeCreateDto dto);
+        Task<EmployeeResponseDto> CreateEmployeeAsync(CreateEmployeeDto dto);
         Task<IEnumerable<EmployeeResponseDto>> GetEmployeesByDepartmentAsync(string departmentName);
 
 

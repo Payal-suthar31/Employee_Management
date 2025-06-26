@@ -4,6 +4,6 @@ namespace EmployeeManagementSystem.Interfaces
 {
     public interface IDepartmentService
     {
-        Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync();
+        Task<IEnumerable<Department>> GetAllDepartmentsAsync();
     }
 }

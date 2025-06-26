@@ -19,7 +19,7 @@ export default function EmployeeCard() {
       const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:5181/api/Employees/all', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': token,
           'Accept': 'application/json'
         }
       });
@@ -48,7 +48,7 @@ export default function EmployeeCard() {
         const token = localStorage.getItem('token');
         await axios.delete(`http://localhost:5181/api/Employees/${id}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': token
           }
         });
         fetchEmployees();
@@ -73,7 +73,7 @@ export default function EmployeeCard() {
         };
         await axios.put(`http://localhost:5181/api/Employees/${selectedEmployee.id}`, updateData, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': token,
             'Content-Type': 'application/json'
           }
         });
@@ -88,7 +88,7 @@ export default function EmployeeCard() {
         };
         await axios.post('http://localhost:5181/api/Employees', createData, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': token,
             'Content-Type': 'application/json'
           }
         });

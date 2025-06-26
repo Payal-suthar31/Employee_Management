@@ -29,7 +29,7 @@ const Dashboard = () => {
       const response = await employeeApi.getAllEmployees();
       setEmployees(response.data);
       setLoading(false);
-    } catch (err) {
+      } catch (err) {
       console.error('Error fetching employees:', err);
       setError('Failed to load employees');
       setLoading(false);
@@ -174,7 +174,7 @@ const Dashboard = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Sign Out
-          </button>
+        </button>
         </div>
       </nav>
       {/* Navbar Animations & Glassmorphism */}
@@ -209,15 +209,15 @@ const Dashboard = () => {
                 <div className="text-center p-4 bg-[#f7fafd] rounded-lg">
                   <p className="text-2xl sm:text-3xl font-bold text-[#CD853F]">{dashboardCounts.activeEmployees}</p>
                   <p className="text-xs sm:text-sm text-[#232946]/70 mt-1">Active Employees</p>
-                </div>
+            </div>
                 <div className="text-center p-4 bg-[#f7fafd] rounded-lg">
                   <p className="text-2xl sm:text-3xl font-bold text-[#CD853F]">{dashboardCounts.departmentCount}</p>
                   <p className="text-xs sm:text-sm text-[#232946]/70 mt-1">Departments</p>
-                </div>
+              </div>
                 <div className="text-center p-4 bg-[#f7fafd] rounded-lg">
                   <p className="text-2xl sm:text-3xl font-bold text-[#CD853F]">{dashboardCounts.reportCount}</p>
                   <p className="text-xs sm:text-sm text-[#232946]/70 mt-1">Reports</p>
-                </div>
+              </div>
               </div>
             </div>
           </div>
@@ -238,7 +238,7 @@ const Dashboard = () => {
               </div>
             </div>
           </Link>
-        </div>
+      </div>
 
         {/* Main Management Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -257,7 +257,7 @@ const Dashboard = () => {
                 <p className="text-sm text-[#232946]/70">Manage employee records, roles, and permissions</p>
               </div>
             </div>
-          </Link>
+        </Link>
 
           {/* Department Management Card */}
           <Link to="/admin/departments" className="group relative w-full">
@@ -274,7 +274,7 @@ const Dashboard = () => {
                 <p className="text-sm text-[#232946]/70">Organize and manage departmental structure</p>
               </div>
             </div>
-          </Link>
+        </Link>
 
           {/* Report Management Card */}
           <Link to="/admin/reports" className="group relative w-full">
@@ -291,21 +291,21 @@ const Dashboard = () => {
                 <p className="text-sm text-[#232946]/70">View and manage employee reports</p>
               </div>
             </div>
-          </Link>
-        </div>
+        </Link>
+      </div>
 
         {/* Employee Table Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8 mt-12">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-[#232946]">Employee Overview</h3>
             <div className="flex items-center space-x-4">
-              <input
-                type="text"
-                placeholder="Search employees..."
-                value={filterText}
-                onChange={(e) => setFilterText(e.target.value)}
+                <input
+                  type="text"
+                  placeholder="Search employees..."
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#bfa181] text-sm"
-              />
+                  />
             </div>
           </div>
 
@@ -419,8 +419,8 @@ const Dashboard = () => {
                   >
                     Next
                   </button>
-                </div>
-              </div>
+          </div>
+            </div>
             )}
           </div>
         </div>

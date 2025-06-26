@@ -78,7 +78,7 @@ const Login = () => {
 
     try {
       const response = await authService.login(credentials.email, credentials.password);
-      
+
       if (response.token) {
         // Store token and role
         localStorage.setItem('token', response.token);
@@ -90,26 +90,26 @@ const Login = () => {
         
         if (response.userId) {
           localStorage.setItem('userId', response.userId);
-          
+        
           // If user is an employee, fetch their employee details
           if (userRole === 'employee') {
-            try {
+          try {
               const employeeResponse = await axios.get(
                 'http://localhost:5181/api/Employees/me',
                 {
-                  headers: {
+              headers: {
                     'Authorization': response.token,
                     'Accept': '*/*'
                   }
-                }
+              }
               );
               
-              if (employeeResponse.data && employeeResponse.data.id) {
-                localStorage.setItem('employeeId', employeeResponse.data.id);
-              } else {
+            if (employeeResponse.data && employeeResponse.data.id) {
+              localStorage.setItem('employeeId', employeeResponse.data.id);
+            } else {
                 throw new Error('Invalid employee data received');
-              }
-            } catch (error) {
+            }
+          } catch (error) {
               let errorMessage = 'Failed to fetch employee details. ';
               if (error.response?.status === 401) {
                 errorMessage += 'Authentication failed. Please try logging in again.';
@@ -143,10 +143,13 @@ const Login = () => {
         setPasswordError('Incorrect password. Please try again.');
         setCredentials(prev => ({ ...prev, password: '' })); // Clear password field
       } else if (error.response?.status === 401) {
-        setPasswordError('Incorrect password. Please try again.');
+        setError('Your account is pending approval. Please wait for admin approval before logging in.');
         setCredentials(prev => ({ ...prev, password: '' })); // Clear password field
       } else if (error.response?.data?.message) {
-        setError(error.response.data.message);
+          setError(error.response.data.message);
+      } else if (error.message.includes('pending approval')) {
+        setError(error.message);
+        setCredentials(prev => ({ ...prev, password: '' })); // Clear password field
       } else {
         setError('An error occurred. Please try again.');
       }

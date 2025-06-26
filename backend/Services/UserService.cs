@@ -15,7 +15,6 @@ public class UserService : IUserService
         _context = context;
         _jwtService = jwtService;
     }
-
     public async Task<string> RegisterAsync(RegisterDto dto)
     {
         if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
@@ -27,27 +26,31 @@ public class UserService : IUserService
             Email = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             Role = dto.Role ?? "Employee",
-            Department = "General",
-            Position ="Employee",
-
+            Department = null,
+            Position = null,
+            IsApproved = dto.Role == "Admin" ? true : false
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return _jwtService.GenerateToken(user);
+        return _jwtService.GenerateToken(user); 
     }
+
+
 
     public async Task<(string Token, string Role)> LoginAsync(LoginDto dto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            throw new Exception("Invalid credentials");
+            throw new UnauthorizedAccessException("Invalid credentials");
+
+        if (!user.IsApproved)
+            throw new UnauthorizedAccessException("Your account is not yet approved by the admin");
 
         var token = _jwtService.GenerateToken(user);
-
-        return (token, user.Role); 
+        return (token, user.Role);
     }
     public async Task<UserResponseDto> GetUserProfileAsync(int userId)
     {
